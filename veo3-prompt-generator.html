@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VEO 3 Professional Prompt Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #eee;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #ff0050, #ff4080);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(255, 0, 80, 0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #888;
+            font-size: 1.1em;
+        }
+
+        .framework-section {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .section-title {
+            font-size: 1.3em;
+            color: #ff4080;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-number {
+            background: #ff4080;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #ccc;
+            font-size: 0.9em;
+        }
+
+        .label-hint {
+            font-size: 0.8em;
+            color: #666;
+            font-weight: normal;
+        }
+
+        input, textarea, select {
+            padding: 12px 16px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            color: #fff;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #ff4080;
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 20px rgba(255, 64, 128, 0.2);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: 'Courier New', monospace;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        option {
+            background: #1a1a2e;
+            color: #fff;
+        }
+
+        .character-input {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .character-input input {
+            flex: 1;
+        }
+
+        .add-character-btn {
+            padding: 12px 20px;
+            background: #ff4080;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .add-character-btn:hover {
+            background: #ff5090;
+            transform: translateY(-1px);
+        }
+
+        .character-list {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .character-tag {
+            background: rgba(255, 64, 128, 0.2);
+            border: 1px solid #ff4080;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9em;
+        }
+
+        .character-tag button {
+            background: none;
+            border: none;
+            color: #ff4080;
+            cursor: pointer;
+            font-size: 1.2em;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .format-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .format-btn {
+            padding: 12px 25px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .format-btn.active {
+            background: #ff4080;
+            border-color: #ff4080;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        button {
+            padding: 15px 35px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .generate-btn {
+            background: linear-gradient(45deg, #ff0050, #ff4080);
+            color: white;
+            box-shadow: 0 4px 20px rgba(255, 64, 128, 0.4);
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(255, 64, 128, 0.6);
+        }
+
+        .clear-btn {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .clear-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .output-section {
+            margin-top: 40px;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            border: 2px solid #ff4080;
+            position: relative;
+            overflow: hidden;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #ff4080;
+            font-size: 1.8em;
+        }
+
+        #promptOutput {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 25px;
+            border-radius: 10px;
+            min-height: 150px;
+            white-space: pre-wrap;
+            line-height: 1.8;
+            font-size: 1.05em;
+            font-family: 'Courier New', monospace;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .copy-btn {
+            margin-top: 20px;
+            background: linear-gradient(45deg, #00ff88, #00cc66);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(0, 255, 136, 0.4);
+        }
+
+        .copy-btn.copied {
+            background: linear-gradient(45deg, #00cc66, #00ff88);
+        }
+
+        .tips-section {
+            background: rgba(255, 64, 128, 0.1);
+            border: 1px solid rgba(255, 64, 128, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .tips-title {
+            color: #ff4080;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .tips-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .tips-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+            font-size: 0.9em;
+            color: #ccc;
+        }
+
+        .tips-list li:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #ff4080;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 0.3s ease;
+        }
+
+        .preset-btn {
+            background: linear-gradient(45deg, #00ff88, #00cc66);
+            color: #000;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .preset-btn:hover {
+            background: linear-gradient(45deg, #00cc66, #00ff88);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(0, 255, 136, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>VEO 3 Professional Prompt Generator</h1>
+        <p class="subtitle">Generate structured prompts following VEO 3's 8-part framework for optimal results</p>
+
+        <div class="tips-section">
+            <div class="tips-title">💡 VEO 3 Prompt Requirements</div>
+            <ul class="tips-list">
+                <li>Use specific camera terms: "medium shot", "close-up", "wide shot" (not "POV" or "bird's eye")</li>
+                <li>For photorealism: Use "photorealistic" or "hyperrealistic" + lens details + "high detail, 4K quality"</li>
+                <li>For selfie perspective, use "selfie-style handheld shot" and describe "holding selfie stick" in subject details</li>
+                <li>Format dialogue as: Character says: [words] (no quotation marks)</li>
+                <li>Keep videos between 5-8 seconds (dialogue under 8 seconds)</li>
+                <li>Be specific and detailed - avoid vague descriptions</li>
+                <li>Always end with "No subtitles, no text overlay"</li>
+            </ul>
+        </div>
+
+        <div class="tips-section" style="background: rgba(0, 255, 136, 0.1); border-color: rgba(0, 255, 136, 0.3);">
+            <div class="tips-title" style="color: #00ff88;">🎬 Photorealistic Preset Combinations</div>
+            <p style="font-size: 0.85em; color: #aaa; margin-bottom: 10px;">
+                The key to photorealism: Layer multiple specific descriptors instead of just using "realistic"
+            </p>
+            <ul class="tips-list">
+                <li><strong>Ultra Realistic Human:</strong> "Photorealistic" + "85mm portrait lens" + "soft natural light" + "shallow focus, high detail, 4K quality, natural skin tones"</li>
+                <li><strong>Documentary Style:</strong> "Documentary style" + "50mm lens" + "natural lighting" + "deep focus, handheld movement"</li>
+                <li><strong>Cinematic Realism:</strong> "Hyperrealistic cinematic" + "35mm film photography" + "dramatic lighting" + "film grain, color grading"</li>
+                <li><strong>Professional Interview:</strong> "Professional camera footage" + "soft focus" + "studio lighting" + "shallow depth of field"</li>
+            </ul>
+        </div>
+
+        <div class="format-selector">
+            <button class="format-btn active" onclick="setFormat('structured')" id="structuredBtn">Structured Format (Recommended)</button>
+            <button class="format-btn" onclick="setFormat('natural')" id="naturalBtn">Natural Language</button>
+            <button class="format-btn preset-btn" onclick="applyPhotorealisticPreset()" style="border-color: #00ff88;">✨ Apply Photorealistic Preset</button>
+        </div>
+
+        <form id="promptForm">
+            <!-- 1. Scene Description -->
+            <div class="framework-section">
+                <h3 class="section-title">
+                    <span class="section-number">1</span>
+                    Scene Description
+                </h3>
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label for="sceneDescription">
+                            Overall Action & Atmosphere
+                            <span class="label-hint">(What's happening in the scene?)</span>
+                        </label>
+                        <textarea id="sceneDescription" placeholder="Example: Professional businesswoman confidently presenting quarterly results to board members, using hand gestures to emphasize key points, maintaining eye contact with audience, natural body language showing expertise and engagement"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Visual Style -->
+            <div class="framework-section">
+                <h3 class="section-title">
+                    <span class="section-number">2</span>
+                    Visual Style
+                    <span id="photorealisticBadge" style="display: none; font-size: 0.7em; background: #00ff88; color: #000; padding: 3px 10px; border-radius: 15px; margin-left: 10px;">PHOTOREALISTIC MODE</span>
+                </h3>
+                <p style="font-size: 0.85em; color: #aaa; margin-bottom: 15px; font-style: italic;">
+                    💡 Pro tip: For truly photorealistic results, combine "photorealistic" with lens effects and add "high detail, 4K quality" in additional details
+                </p>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="visualStyle">Aesthetic Direction</label>
+                        <select id="visualStyle">
+                            <option value="">Select style...</option>
+                            <option value="photorealistic">Photorealistic</option>
+                            <option value="hyperrealistic cinematic">Hyperrealistic Cinematic</option>
+                            <option value="documentary style">Documentary Style</option>
+                            <option value="35mm film photography">35mm Film Photography</option>
+                            <option value="professional camera footage">Professional Camera Footage</option>
+                            <option value="cinematic">Cinematic</option>
+                            <option value="animated">Animated</option>
+                            <option value="stylized">Stylized</option>
+                            <option value="noir">Film Noir</option>
+                            <option value="handheld camera">Handheld Camera</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="additionalStyle">
+                            Additional Style Details
+                            <span class="label-hint">(Optional - e.g., "high detail, 4K quality" or for selfies: "selfie stick visible")</span>
+                        </label>
+                        <input type="text" id="additionalStyle" placeholder="Example: high detail, 4K quality, natural skin tones, realistic textures, sharp focus, visible pores">
+                    </div>
+                    <div class="form-group">
+                        <label for="lensEffects">Lens & Focus Effects</label>
+                        <select id="lensEffects">
+                            <option value="">Select lens effect...</option>
+                            <option value="shallow focus">Shallow Focus (Bokeh)</option>
+                            <option value="deep focus">Deep Focus (All Sharp)</option>
+                            <option value="soft focus">Soft Focus</option>
+                            <option value="macro lens">Macro Lens</option>
+                            <option value="wide-angle lens">Wide-angle Lens</option>
+                            <option value="telephoto lens">Telephoto Lens</option>
+                            <option value="50mm lens">50mm Lens (Natural)</option>
+                            <option value="85mm portrait lens">85mm Portrait Lens</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Camera Movement -->
+            <div class="framework-section">
+                <h3 class="section-title">
+                    <span class="section-number">3</span>
+                    Camera Movement
+                </h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="cameraShot">Camera Shot Type</label>
+                        <select id="cameraShot" required>
+                            <option value="">Select shot type...</option>
+                            <option value="eye-level shot">Eye-level Shot (Most Natural)</option>
+                            <option value="wide shot">Wide Shot</option>
+                            <option value="medium shot">Medium Shot</option>
+                            <option value="close-up">Close-up</option>
+                            <option value="extreme close-up">Extreme Close-up</option>
+                            <option value="over-the-shoulder">Over-the-shoulder</option>
+                            <option value="two-shot">Two-shot</option>
+                            <option value="establishing shot">Establishing Shot</option>
+                            <option value="selfie-style handheld shot">Selfie-style Handheld Shot</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cameraMovement">Camera Movement</label>
+                        <select id="cameraMovement">
+                            <option value="">Select movement...</option>
+                            <option value="static">Static</option>
+                            <option value="subtle handheld">Subtle Handheld (Realistic)</option>
+                            <option value="smooth stabilized">Smooth Stabilized</option>
+                            <option value="tracking movement">Tracking Movement</option>
+                            <option value="panning">Panning</option>
+                            <option value="tilting">Tilting</option>
+                            <option value="dolly in">Dolly In</option>
+                            <option value="dolly out">Dolly Out</option>
+                            <option value="handheld">Handheld</option>
+                            <option value="selfie movement">Selfie Movement (slight shake)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Main Subject -->
+            <div class="framework-section">
+                <h3 class="section-title">
+                    <span class="section-number">4</span>
+                    Main Subject
+                </h3>
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label for="mainSubject">
+                            Detailed Character/Object Description
+                            <span class="label-hint">(Be specific: age, appearance, clothing, etc. For selfie shots, mention "holding selfie stick" or "arm extended holding camera")</span>
+                        </label>
+                        <textarea id="mainSubject" placeholder="Example: 35-year-old woman, olive skin, shoulder-length black hair with subtle highlights, wearing navy blazer over white blouse, natural makeup with light pink lipstick, friendly expression with slight smile, realistic skin texture"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="subjectMovement">Subject Movement</label>
+                        <select id="subjectMovement">
+                            <option value="">Select movement type...</option>
+                            <option value="natural movement">Natural Movement</option>
+                            <option value="realistic gestures">Realistic Gestures</option>
+                            <option value="subtle movements">Subtle Movements</option>
+                            <option value="energetic movement">Energetic Movement</option>
+                            <option value="slow and deliberate movement">Slow and Deliberate Movement</option>
+                            <option value="static pose">Static Pose</option>
+                            <option value="dynamic action">Dynamic Action</option>
+                            <option value="authentic body language">Authentic Body Language</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Background Setting -->
+            <div class="framework-section">
+                <h3 class="section-title">
+                    <span class="section-number">5</span>
+                    Background Setting
+                </h3>
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label for="backgroundSetting">
+                            Environmental Context
+                            <span class="label-hint">(Location, time period, surrounding details)</span>
+                        </label>
+                        <input type="text" id="backgroundSetting" placeholder="Example: Modern corporate boardroom, floor-to-ceiling windows showing city skyline, polished wood conference table, leather chairs, soft afternoon light filtering through">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. Lighting and Mood -->
+            <div class="framework-section">
+                <h3 class="section-title">
+                    <span class="section-number">6</span>
+                    Lighting and Mood
+                </h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="lighting">Lighting Type</label>
+                        <select id="lighting">
+                            <option value="">Select lighting...</option>
+                            <option value="natural lighting">Natural Lighting</option>
+                            <option value="soft natural light">Soft Natural Light</option>
+                            <option value="bright daylight">Bright Daylight</option>
+                            <option value="overcast lighting">Overcast Lighting</option>
+                            <option value="golden hour">Golden Hour</option>
+                            <option value="blue hour">Blue Hour</option>
+                            <option value="dramatic lighting">Dramatic Lighting</option>
+                            <option value="studio lighting">Studio Lighting</option>
+                            <option value="low-key lighting">Low-key Lighting</option>
+                            <option value="high-key lighting">High-key Lighting</option>
+                            <option value="diffused lighting">Diffused Lighting</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="mood">
+                            Emotional Tone
+                            <span class="label-hint">(Atmosphere/feeling)</span>
+                        </label>
+                        <input type="text" id="mood" placeholder="Example: Professional yet approachable, confident, engaging, authentic">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. Audio Elements -->
+            <div class="framework-section">
+                <h3 class="section-title">
+                    <span class="section-number">7</span>
+                    Audio Elements
+                </h3>
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label for="characterSetup">Character Setup for Dialogue</label>
+                        <div class="character-input">
+                            <input type="text" id="characterName" placeholder="Character name">
+                            <input type="text" id="characterDesc" placeholder="Brief description (for consistency)">
+                            <button type="button" class="add-character-btn" onclick="addCharacter()">Add Character</button>
+                        </div>
+                        <div id="characterList" class="character-list"></div>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="dialogue">
+                            Dialogue
+                            <span class="label-hint">(Format: Character says: words - no quotes, under 8 seconds)</span>
+                        </label>
+                        <textarea id="dialogue" placeholder="Example: Sarah says: As you can see from these numbers, we exceeded our targets by fifteen percent"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="soundEffects">Sound Effects</label>
+                        <input type="text" id="soundEffects" placeholder="Example: Quiet office ambience, papers shuffling, pen clicking, subtle air conditioning hum">
+                    </div>
+                    <div class="form-group">
+                        <label for="musicType">Background Music</label>
+                        <select id="musicType">
+                            <option value="">No music</option>
+                            <option value="subtle background music">Subtle Background</option>
+                            <option value="corporate background music">Corporate Background</option>
+                            <option value="ambient music">Ambient</option>
+                            <option value="dramatic orchestral music">Dramatic Orchestral</option>
+                            <option value="suspenseful music">Suspenseful</option>
+                            <option value="upbeat music">Upbeat</option>
+                            <option value="action music">Action</option>
+                            <option value="emotional piano music">Emotional Piano</option>
+                            <option value="electronic music">Electronic</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. Technical Constraints -->
+            <div class="framework-section">
+                <h3 class="section-title">
+                    <span class="section-number">8</span>
+                    Technical Constraints
+                </h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="duration">Duration (seconds)</label>
+                        <input type="number" id="duration" value="7" min="5" max="8">
+                    </div>
+                    <div class="form-group">
+                        <label for="aspectRatio">Aspect Ratio</label>
+                        <select id="aspectRatio">
+                            <option value="16:9">16:9 (Landscape)</option>
+                            <option value="9:16">9:16 (Portrait)</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="negativePrompting">
+                            Negative Prompting
+                            <span class="label-hint">(Elements to exclude - use direct descriptions. For photorealism, exclude: "cartoon, animation, CGI, artificial")</span>
+                        </label>
+                        <input type="text" id="negativePrompting" placeholder="Example: cartoon, animation, CGI, 3D render, video game, artificial, plastic skin, uncanny valley">
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="button" class="generate-btn" onclick="generatePrompt()">Generate VEO 3 Prompt</button>
+                <button type="button" class="clear-btn" onclick="clearForm()">Clear All</button>
+            </div>
+        </form>
+
+        <div class="output-section" id="outputSection" style="display: none;">
+            <h2>Generated VEO 3 Prompt</h2>
+            <div id="promptOutput"></div>
+            <button class="copy-btn" onclick="copyToClipboard()">
+                <span>📋</span>
+                <span id="copyText">Copy to Clipboard</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let promptFormat = 'structured';
+        let characters = [];
+
+        function setFormat(format) {
+            promptFormat = format;
+            document.getElementById('structuredBtn').classList.remove('active');
+            document.getElementById('naturalBtn').classList.remove('active');
+            
+            if (format === 'structured') {
+                document.getElementById('structuredBtn').classList.add('active');
+            } else {
+                document.getElementById('naturalBtn').classList.add('active');
+            }
+        }
+
+        function addCharacter() {
+            const name = document.getElementById('characterName').value.trim();
+            const desc = document.getElementById('characterDesc').value.trim();
+            
+            if (name) {
+                characters.push({ name, desc });
+                updateCharacterList();
+                document.getElementById('characterName').value = '';
+                document.getElementById('characterDesc').value = '';
+            }
+        }
+
+        function removeCharacter(index) {
+            characters.splice(index, 1);
+            updateCharacterList();
+        }
+
+        function updateCharacterList() {
+            const list = document.getElementById('characterList');
+            list.innerHTML = characters.map((char, index) => `
+                <div class="character-tag">
+                    <span>${char.name}${char.desc ? ': ' + char.desc : ''}</span>
+                    <button type="button" onclick="removeCharacter(${index})">×</button>
+                </div>
+            `).join('');
+        }
+
+        function generatePrompt() {
+            const elements = {
+                sceneDescription: document.getElementById('sceneDescription').value.trim(),
+                visualStyle: document.getElementById('visualStyle').value,
+                additionalStyle: document.getElementById('additionalStyle').value.trim(),
+                lensEffects: document.getElementById('lensEffects').value,
+                cameraShot: document.getElementById('cameraShot').value,
+                cameraMovement: document.getElementById('cameraMovement').value,
+                mainSubject: document.getElementById('mainSubject').value.trim(),
+                subjectMovement: document.getElementById('subjectMovement').value,
+                backgroundSetting: document.getElementById('backgroundSetting').value.trim(),
+                lighting: document.getElementById('lighting').value,
+                mood: document.getElementById('mood').value.trim(),
+                dialogue: document.getElementById('dialogue').value.trim(),
+                soundEffects: document.getElementById('soundEffects').value.trim(),
+                musicType: document.getElementById('musicType').value,
+                duration: document.getElementById('duration').value,
+                aspectRatio: document.getElementById('aspectRatio').value,
+                negativePrompting: document.getElementById('negativePrompting').value.trim()
+            };
+
+            // Validate required fields
+            if (!elements.cameraShot) {
+                alert('Camera shot type is required for VEO 3 prompts');
+                return;
+            }
+
+            if (!elements.sceneDescription && !elements.mainSubject) {
+                alert('Please provide either a scene description or main subject');
+                return;
+            }
+
+            let prompt = '';
+
+            if (promptFormat === 'structured') {
+                // Structured format (recommended)
+                const parts = [];
+
+                if (elements.mainSubject) {
+                    parts.push(`SUBJECT: ${elements.mainSubject}`);
+                }
+
+                if (elements.backgroundSetting) {
+                    parts.push(`SETTING: ${elements.backgroundSetting}`);
+                }
+
+                if (elements.sceneDescription) {
+                    parts.push(`ACTION: ${elements.sceneDescription}`);
+                }
+
+                // Camera info
+                let cameraInfo = elements.cameraShot;
+                if (elements.cameraMovement) {
+                    cameraInfo += ` with ${elements.cameraMovement}`;
+                }
+                if (elements.visualStyle) {
+                    cameraInfo += `, ${elements.visualStyle}`;
+                }
+                if (elements.lensEffects) {
+                    cameraInfo += `, ${elements.lensEffects}`;
+                }
+                if (elements.additionalStyle) {
+                    cameraInfo += `, ${elements.additionalStyle}`;
+                }
+                if (elements.lighting) {
+                    cameraInfo += `, ${elements.lighting}`;
+                }
+                parts.push(`CAMERA: ${cameraInfo}`);
+
+                if (elements.mood) {
+                    parts.push(`MOOD: ${elements.mood}`);
+                }
+
+                if (elements.subjectMovement) {
+                    parts.push(`MOVEMENT: ${elements.subjectMovement}`);
+                }
+
+                if (elements.dialogue) {
+                    parts.push(`DIALOGUE: ${elements.dialogue}`);
+                }
+
+                // Audio
+                const audioElements = [];
+                if (elements.soundEffects) {
+                    audioElements.push(elements.soundEffects);
+                }
+                if (elements.musicType) {
+                    audioElements.push(elements.musicType);
+                }
+                if (audioElements.length > 0) {
+                    parts.push(`AUDIO: ${audioElements.join(', ')}`);
+                }
+
+                if (elements.negativePrompting) {
+                    parts.push(`EXCLUDE: ${elements.negativePrompting}`);
+                }
+
+                parts.push(`DURATION: ${elements.duration} seconds`);
+                parts.push(`FORMAT: ${elements.aspectRatio}, No subtitles, no text overlay`);
+
+                prompt = parts.join(' / ');
+
+            } else {
+                // Natural language format
+                let sentences = [];
+
+                // Start with camera and scene
+                let openingSentence = `${elements.cameraShot}`;
+                if (elements.cameraMovement) {
+                    openingSentence += ` with ${elements.cameraMovement}`;
+                }
+                openingSentence += ' of ';
+
+                if (elements.mainSubject) {
+                    openingSentence += elements.mainSubject;
+                }
+                if (elements.sceneDescription) {
+                    openingSentence += ` ${elements.sceneDescription}`;
+                }
+                sentences.push(openingSentence + '.');
+
+                // Setting
+                if (elements.backgroundSetting) {
+                    sentences.push(`Scene takes place in ${elements.backgroundSetting}.`);
+                }
+
+                // Visual style and lighting
+                const styleElements = [];
+                if (elements.visualStyle) styleElements.push(elements.visualStyle);
+                if (elements.lensEffects) styleElements.push(elements.lensEffects);
+                if (elements.additionalStyle) styleElements.push(elements.additionalStyle);
+                if (elements.lighting) styleElements.push(elements.lighting);
+                if (styleElements.length > 0) {
+                    sentences.push(`Visual style: ${styleElements.join(', ')}.`);
+                }
+
+                // Mood
+                if (elements.mood) {
+                    sentences.push(`${elements.mood} atmosphere.`);
+                }
+
+                // Movement
+                if (elements.subjectMovement) {
+                    sentences.push(`Subject has ${elements.subjectMovement}.`);
+                }
+
+                // Dialogue
+                if (elements.dialogue) {
+                    sentences.push(elements.dialogue + '.');
+                }
+
+                // Audio
+                if (elements.soundEffects || elements.musicType) {
+                    let audioSentence = 'Audio includes ';
+                    const audioParts = [];
+                    if (elements.soundEffects) audioParts.push(elements.soundEffects);
+                    if (elements.musicType) audioParts.push(elements.musicType);
+                    sentences.push(audioSentence + audioParts.join(' and ') + '.');
+                }
+
+                // Technical
+                sentences.push(`${elements.duration} seconds, ${elements.aspectRatio}.`);
+                
+                if (elements.negativePrompting) {
+                    sentences.push(`Exclude: ${elements.negativePrompting}.`);
+                }
+
+                sentences.push('No subtitles, no text overlay.');
+
+                prompt = sentences.join(' ');
+            }
+
+            // Display the generated prompt
+            document.getElementById('promptOutput').textContent = prompt;
+            document.getElementById('outputSection').style.display = 'block';
+            document.getElementById('outputSection').classList.add('pulse');
+            setTimeout(() => {
+                document.getElementById('outputSection').classList.remove('pulse');
+            }, 300);
+        }
+
+        function applyPhotorealisticPreset() {
+            // Apply photorealistic settings
+            document.getElementById('visualStyle').value = 'photorealistic';
+            document.getElementById('visualStyle').dispatchEvent(new Event('change')); // Trigger badge update
+            document.getElementById('additionalStyle').value = 'high detail, 4K quality, natural skin tones, realistic textures, sharp focus';
+            document.getElementById('lensEffects').value = '85mm portrait lens';
+            document.getElementById('cameraShot').value = 'eye-level shot';
+            document.getElementById('cameraMovement').value = 'subtle handheld';
+            document.getElementById('lighting').value = 'soft natural light';
+            document.getElementById('mood').value = 'Natural, authentic, lifelike';
+            document.getElementById('subjectMovement').value = 'natural movement';
+            document.getElementById('negativePrompting').value = 'cartoon, animation, CGI, 3D render, video game, artificial, plastic skin';
+            
+            // Add a pulse effect to show changes
+            const sections = document.querySelectorAll('.framework-section');
+            sections.forEach(section => {
+                section.classList.add('pulse');
+                setTimeout(() => section.classList.remove('pulse'), 600);
+            });
+            
+            // Scroll to top to show the changes
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            alert('Photorealistic preset applied! Fill in the remaining fields for best results.');
+        }
+
+        function clearForm() {
+            document.getElementById('promptForm').reset();
+            document.getElementById('outputSection').style.display = 'none';
+            characters = [];
+            updateCharacterList();
+        }
+
+        function copyToClipboard() {
+            const promptText = document.getElementById('promptOutput').textContent;
+            navigator.clipboard.writeText(promptText).then(() => {
+                const copyBtn = document.querySelector('.copy-btn');
+                const copyText = document.getElementById('copyText');
+                
+                copyBtn.classList.add('copied');
+                copyText.textContent = 'Copied!';
+                
+                setTimeout(() => {
+                    copyBtn.classList.remove('copied');
+                    copyText.textContent = 'Copy to Clipboard';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                alert('Failed to copy to clipboard');
+            });
+        }
+
+        // Add event listener for visual style changes
+        document.getElementById('visualStyle').addEventListener('change', function() {
+            const badge = document.getElementById('photorealisticBadge');
+            if (this.value === 'photorealistic' || 
+                this.value === 'hyperrealistic cinematic' || 
+                this.value === '35mm film photography' || 
+                this.value === 'professional camera footage' ||
+                this.value === 'documentary style') {
+                badge.style.display = 'inline-block';
+                badge.classList.add('pulse');
+                setTimeout(() => badge.classList.remove('pulse'), 600);
+            } else {
+                badge.style.display = 'none';
+            }
+        });
+
+        // Allow Enter key to generate prompt (except in textareas)
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter' && event.target.tagName !== 'TEXTAREA') {
+                event.preventDefault();
+                generatePrompt();
+            }
+        });
+    </script>
+</body>
+</html>
